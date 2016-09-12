@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <script src=jquery-3.1.0.min.js></script>
+    <style>
+      body{
+        text-align: center;
+      }
+      #stage{
+        display: inline-block;
+        text-align: left;
+        background-color: 000000;
+        width: 340px;
+        height: 520px;
+        overflow: hidden;
+      }
+      .common{
+        display: inline-block;
+        position: relative;
+        width: 100px;
+        height: 100px;
+      }
+      .player{
+        background-color: FFFF00;
+      }
+    </style>
+    <script>
+      /* init function */
+      $(function(){
+        var $stage = $("#stage"),
+            $player = $("#player"),
+            /* top:38 left:37 bottom:40 right:39 */
+            key = {
+              left: 37,
+              right: 39
+            };
+        $player.css("top", $stage.height() - $player.height()+"px");
+        $player.css("left", ($stage.width() - $player.width())/2+"px");
+
+        /* Use key control the player */
+        $("body").keydown(function(e) {
+          var playerLeft = parseInt($player.css("left"));
+          switch(e.which)
+          {
+            case key.left:
+              if (playerLeft >= 120)
+              {
+                $player.css("left", (playerLeft - 110)+"px");
+              }
+            break;
+            case key.right:
+            if (playerLeft < 230)
+            {
+              $player.css("left", (playerLeft + 110)+"px");
+            }
+            break;
+          }
+        });
+
+        /* Use click/contectmenu to control player */
+        $("body").click(function(){
+          $player.css("background-color", "00FF00");
+        });
+        $("body").contextmenu(function(e){
+          e.preventDefault();
+          $player.css("background-color", "0000FF");
+        });
+      })
+    </script>
+  </head>
+  <body>
+    <div id="stage">
+      <div id="player" class="common player"></div>
+    </div>
+  </body>
+</html>
