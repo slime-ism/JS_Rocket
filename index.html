@@ -7,6 +7,8 @@
       }
       #stage{
         display: inline-block;
+        position: relative;
+        top: 50px;
         text-align: left;
         background-color: 000000;
         width: 340px;
@@ -15,11 +17,15 @@
       }
       .common{
         display: inline-block;
-        position: relative;
+        position: absolute;
         width: 100px;
         height: 100px;
       }
       .player{
+        background-color: 00FF00;
+      }
+
+      .enemy{
         background-color: FFFF00;
       }
     </style>
@@ -32,7 +38,8 @@
             key = {
               left: 37,
               right: 39
-            };
+            },
+            speed = 3;
         $player.css("top", $stage.height() - $player.height()+"px");
         $player.css("left", ($stage.width() - $player.width())/2+"px");
 
@@ -58,12 +65,59 @@
 
         /* Use click/contectmenu to control player */
         $("body").click(function(){
-          $player.css("background-color", "00FF00");
+          var playerLeft = parseInt($player.css("left"));
+          if (playerLeft >= 120)
+          {
+            $player.css("left", (playerLeft - 110)+"px");
+          }
         });
         $("body").contextmenu(function(e){
           e.preventDefault();
-          $player.css("background-color", "0000FF");
+          var playerLeft = parseInt($player.css("left"));
+          if (playerLeft < 230)
+          {
+            $player.css("left", (playerLeft + 110)+"px");
+          }
         });
+
+        /* Random Function */
+        function getRandomArbitrary(min, max) {
+          return Math.floor((Math.random() * (max - min))) + min;
+        }
+
+        /* Create Enemy */
+        function createEnemy()
+        {
+          var posEnemy = [10, 120, 230];
+          for (var i=0; i<2; i++)
+          {
+            $("#stage").append('<div class="common enemy"></div>');
+            $(".enemy:last").css("top", -100 +"px");
+            var index = getRandomArbitrary(0, posEnemy.length);
+            $(".enemy:last").css("left", posEnemy[index]+"px");
+            posEnemy.splice(index, 1);
+          }
+        }
+        createEnemy();
+
+        /* Handle Enemy Move */
+        var enemyMoveLoop = setInterval(function(){
+          $(".enemy").each(function(){
+            var enemyTop = parseInt($(this).css("top"));
+            $(this).css("top", (enemyTop + speed)+"px");
+
+            if (enemyTop > $stage.height())
+            {
+              $(this).remove();
+            }
+
+            var enemyLastTop = parseInt($(".enemy:last").css("top"));
+            if (enemyLastTop > 150)
+            {
+              createEnemy();
+            }
+          })
+        }, 1000/60 /* milisecond */)
       })
     </script>
   </head>
